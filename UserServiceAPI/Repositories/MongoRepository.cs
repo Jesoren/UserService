@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using UserService.Configurations;
+using MongoDB.Bson;
 
 namespace UserService.Repositories
 {
@@ -19,9 +20,11 @@ namespace UserService.Repositories
             return await _collection.Find(_ => true).ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(string id)
+        public async Task<T> GetByUsernameAsync(string username)
         {
-            return await _collection.Find(Builders<T>.Filter.Eq("_id", id)).FirstOrDefaultAsync();
+            return await _collection
+                .Find(Builders<T>.Filter.Eq("Username", username))
+                .FirstOrDefaultAsync();
         }
 
         public async Task CreateAsync(T entity)
@@ -29,12 +32,12 @@ namespace UserService.Repositories
             await _collection.InsertOneAsync(entity);
         }
 
-        public async Task UpdateAsync(string id, T entity)
+        public async Task UpdateAsync(ObjectId id, T entity)
         {
             await _collection.ReplaceOneAsync(Builders<T>.Filter.Eq("_id", id), entity);
         }
 
-        public async Task DeleteAsync(string id)
+        public async Task DeleteAsync(ObjectId id)
         {
             await _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", id));
         }

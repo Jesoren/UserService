@@ -2,8 +2,13 @@ using UserService.Configurations;
 using UserService.Repositories;
 using MongoDB.Driver;
 using Microsoft.Extensions.Options;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 var token = Environment.GetEnvironmentVariable("VAULT_TOKEN");
 var endPoint = Environment.GetEnvironmentVariable("VaultEndPoint");
@@ -29,6 +34,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 
 builder.Services.AddScoped(typeof(MongoRepository<>)); // Registrer repository før controllerne
 
+builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
